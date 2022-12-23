@@ -45,6 +45,7 @@ class Node:
         self.demand = dem
         self.isRouted = False
         self.untime = untime
+        self.waitingtime = 0
 
 
 class Route:

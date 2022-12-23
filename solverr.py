@@ -56,8 +56,19 @@ def nearestneighbor():
         node = route.sequenceOfNodes[-1]
         nearest_possible, value = find_node(route, node)
         solver.allNodes[nearest_possible].isRouted = True
-        route.sequenceOfNodes.append(solver.allNodes[nearest_possible])
+        if(len(route.sequenceOfNodes)==1):
+            solver.allNodes[nearest_possible].waitingtime=value
+            print("here1")
+        else:
+            solver.allNodes[nearest_possible].waitingtime=route.sequenceOfNodes[-1].waitingtime+value
+            print("here2")
         route.load += solver.allNodes[nearest_possible].demand
+        route.cost += solver.allNodes[nearest_possible].waitingtime
+        solver.allNodes[nearest_possible].waitingtime+=10
+        route.sequenceOfNodes.append(solver.allNodes[nearest_possible])
+
+
+
         j += 1
 
 
@@ -81,20 +92,27 @@ def calculate_route_details(nodes_sequence):
         rt_load += from_node.demand
     return rt_cumulative_cost, rt_load
 
-
+nearestneighbor()
 sol = Solution()
 sol.routes = routes
-for r in range(0, len(sol.routes)):
-    rt = sol.routes[r]
-    for i in range(0, len(rt.sequenceOfNodes) - 1):
-        c0 = rt.sequenceOfNodes[i]
-        c1 = rt.sequenceOfNodes[i + 1]
-        plt.plot([c0.x, c1.x], [c0.y, c1.y])
+# plot solution
+# for r in range(0, len(sol.routes)):
+#     rt = sol.routes[r]
+#     for i in range(0, len(rt.sequenceOfNodes) - 1):
+#         c0 = rt.sequenceOfNodes[i]
+#         c1 = rt.sequenceOfNodes[i + 1]
+#         plt.plot([c0.x, c1.x], [c0.y, c1.y])
+#
+# plt.show()
+tot_cost =0
+true_total_cost = 0
+for k in routes:
+    for n in k.sequenceOfNodes:
+        print(str(n.ID) + ", ", end="")
+    print()
+    tot_cost+=k.cost
+    rt_cost, load = calculate_route_details(k.sequenceOfNodes)
+    true_total_cost+=rt_cost
 
-plt.show()
-
-# for k in routes:
-#     for n in k.sequenceOfNodes:
-#         print(str(n.ID) + ", ", end="")
-#     print()
-#     rt_cost, load = calculate_route_details(k.sequenceOfNodes)
+print(tot_cost)
+print(true_total_cost)
