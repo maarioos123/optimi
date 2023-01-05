@@ -44,6 +44,7 @@ class Node:
         self.ID = idd
         self.demand = dem
         self.isRouted = False
+        self.positionInRoute=0
         self.untime = untime
         self.waitingtime = 0
 
